@@ -28,6 +28,7 @@
       <th>Approval Amount</th>
       <th>Decline Message</th>
       <th>Actions</th>
+      <th>Gamepass URL</th>
     </tr>
   </thead>
   <tbody>
@@ -119,6 +120,7 @@ async function loadSubmissions() {
           <td>${r.status || "pending"}</td>
           <td>${r.approvalAmount !== undefined && r.approvalAmount !== null ? r.approvalAmount.toFixed(2) : "-"}</td>
           <td>${r.declineMessage || "-"}</td>
+          <td>${r.gamepassURL}</td>
         `;
 
         const actionTd = document.createElement("td");
