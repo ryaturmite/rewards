@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QVRewards - Admin Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f5f7fa; padding: 20px; }
+    h1 { text-align: center; margin-bottom: 30px; color: #4f46e5; }
+    .container { max-width: 1000px; margin: auto; }
+    .card {
+      background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .info { margin-bottom: 10px; }
+    .actions { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      padding: 10px 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;
+    }
+    .accept { background: #4caf50; color: white; }
+    .decline { background: #f44336; color: white; }
+    input[type="text"], input[type="number"] {
+      padding: 8px; border: 1px solid #ccc; border-radius: 8px; width: 120px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>QVRewards - Admin Dashboard</h1>
+  <div class="container" id="submissions"></div>
+
+  <script>
+    const canSee = localStorage.getItem("csdOwner-find");
+
+
+    if (canSee != 1) {
+        document.body.remove();
+    }
+    const firebaseConfig = {
+      apiKey: "AIzaSyARJJ-wEpWeJqfbM5v_ReqzYEn3u1QeDMA",
+      authDomain: "qvrewards.firebaseapp.com",
+      projectId: "qvrewards",
+      storageBucket: "qvrewards.appspot.com",
+      messagingSenderId: "594998843955",
+      appId: "1:594998843955:web:4b5efa3844053ec290a146",
+      measurementId: "G-152PLQK2L3",
+      databaseURL: "https://qvrewards-default-rtdb.firebaseio.com/"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    const submissionsContainer = document.getElementById("submissions");
+
+    function loadSubmissions() {
+      database.ref("receipts/items").on("value", snapshot => {
+        submissionsContainer.innerHTML = "";
+
+        if (!snapshot.exists()) {
+          submissionsContainer.innerHTML = "<p>No submissions yet.</p>";
+          return;
+        }
+
+        snapshot.forEach(child => {
+          const id = child.key;
+          const data = child.val();
+
+          const card = document.createElement("div");
+          card.className = "card";
+
+          card.innerHTML = `
+            <div class="info"><strong>Restaurant #:</strong> ${data.restaurantNum}</div>
+            <div class="info"><strong>Date:</strong> ${data.date}</div>
+            <div class="info"><strong>Order #:</strong> ${data.orderNum}</div>
+            <div class="info"><strong>Order Total:</strong> $${data.orderTotal.toFixed(2)}</div>
+            <div class="info"><strong>Status:</strong> ${data.status}</div>
+          `;
+
+          if (data.status === "pending") {
+            const actions = document.createElement("div");
+            actions.className = "actions";
+
+            const amountInput = document.createElement("input");
+            amountInput.type = "number";
+            amountInput.placeholder = "Reward Amount";
+
+            const declineInput = document.createElement("input");
+            declineInput.type = "text";
+            declineInput.placeholder = "Decline Reason";
+
+            const acceptBtn = document.createElement("button");
+            acceptBtn.className = "accept";
+            acceptBtn.textContent = "Approve";
+            acceptBtn.onclick = () => {
+              const amount = parseFloat(amountInput.value);
+              if (isNaN(amount) || amount <= 0) {
+                alert("Please enter valid reward amount.");
+                return;
+              }
+              database.ref("receipts/items/" + id).update({
+                status: "approved",
+                rewardAmount: amount
+              });
+            };
+
+            const declineBtn = document.createElement("button");
+            declineBtn.className = "decline";
+            declineBtn.textContent = "Decline";
+            declineBtn.onclick = () => {
+              const reason = declineInput.value.trim();
+              if (reason === "") {
+                alert("Please enter decline reason.");
+                return;
+              }
+              database.ref("receipts/items/" + id).update({
+                status: "declined",
+                declineReason: reason
+              });
+            };
+
+            actions.appendChild(amountInput);
+            actions.appendChild(acceptBtn);
+            actions.appendChild(declineInput);
+            actions.appendChild(declineBtn);
+            card.appendChild(actions);
+          } else if (data.status === "approved") {
+            card.innerHTML += `<div class="info"><strong>Reward Amount:</strong> $${data.rewardAmount}</div>`;
+          } else if (data.status === "declined") {
+            card.innerHTML += `<div class="info"><strong>Decline Reason:</strong> ${data.declineReason}</div>`;
+          }
+
+          submissionsContainer.appendChild(card);
+        });
+      });
+    }
+
+    loadSubmissions();
+  </script>
+
+</body>
+</html>

@@ -5,86 +5,159 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QVRewards - Earn</title>
     <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f0f2f5;
-      color: #333;
-      padding: 20px;
-    }
-        
-      nav {
-        background: linear-gradient(90deg, #4f46e5, #6366f1);
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 0 0 12px 12px;
-      }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            padding: 0;
+        }
 
-      nav a {
-        color: #ffffff;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1rem;
-        padding: 8px 14px;
-        border-radius: 8px;
-        transition: background-color 0.3s ease;
-      }
+        nav {
+            background: linear-gradient(90deg, #4f46e5, #6366f1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 12px 12px;
+        }
 
-      nav a:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-      }
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
 
-      header {
-        text-align: center;
-        margin-top: 60px;
-        padding: 20px;
-      }
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
 
-      h1 {
-        font-size: 3rem;
-        margin-bottom: 0.5rem;
-        color: #4f46e5;
-      }
+        header {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+        }
 
-      h2 {
-        font-size: 1.5rem;
-        color: #555;
-        margin-top: 0.5rem;
-      }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            color: #4f46e5;
+        }
 
-      .form-title {
-        text-align: center;
-        margin: 0;
-        padding: 0;
-      }
+        h2 {
+            font-size: 1.5rem;
+            color: #555;
+            margin-top: 0.5rem;
+        }
+
+        .form-title {
+            text-align: center;
+            font-size: 2rem;
+            margin: 40px 0 20px;
+            color: #333;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        @media (min-width: 700px) {
+            .options-container {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        .icon-container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 300px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .icon-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .icon-container img {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 20px;
+        }
+
+        .icon-container a {
+            display: inline-block;
+            background: linear-gradient(90deg, #4f46e5, #6366f1);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .icon-container a:hover {
+            background: linear-gradient(90deg, #4338ca, #4f46e5);
+        }
     </style>
 </head>
 <body>
     <nav>
-      <a href="status/">Status</a>
-      <a href="#">Earn</a>
-      <a href="support/">Support</a>
-      <a href="login/">Login</a>
+        <a href="status/">Status</a>
+        <a href="#">Earn</a>
+        <a href="support/">Support</a>
+        <a href="login/">Login</a>
     </nav>
-  <header>
-    <h1>QVRewards - Earn</h1>
-    <h2>Earn Robux from Chick-fil-a or McDonald's receipts</h2>
-  </header>
 
-  <main>
-    <h1 class="form-title">Pick an option</h1>
-    <img id="cfa-icon" src="resource/images/chick-fil-a-icon.png" alt="restaurant">
-  </main>
-  
-  <script src="js/module/static.module.1.js"></script>
-  <script type="module" src="js/min/static.min.52.js"></script>
+    <header>
+        <h1>QVRewards - Earn</h1>
+        <h2>Earn Robux from Chick-fil-a or McDonald's receipts</h2>
+    </header>
+
+    <div class="form-title">Pick an option</div>
+
+    <main>
+        <div class="options-container">
+            <div class="icon-container">
+                <img id="cfa-icon" src="resource/images/chick-fil-a-icon.png" alt="Chick-fil-A">
+                <a href="cfa/">Select</a>
+            </div>
+
+            <div class="icon-container">
+                <img id="mcd-icon" src="resource/images/mcdonald-icon.png" alt="McDonald's">
+                <a href="mcdonalds/">Select</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/module/static.module.1.js"></script>
 </body>
 </html>
