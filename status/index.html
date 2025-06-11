@@ -18,6 +18,30 @@
       padding: 20px;
     }
 
+      nav {
+        background: linear-gradient(90deg, #4f46e5, #6366f1);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 0 0 12px 12px;
+      }
+
+      nav a {
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 8px 14px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+      }
+
+      nav a:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
     header {
       text-align: center;
       margin-bottom: 40px;
@@ -63,6 +87,12 @@
   </style>
 </head>
 <body>
+    <nav>
+        <a href="#">Status</a>
+        <a href="earn/">Earn</a>
+        <a href="support/">Support</a>
+        <a href="login/">Login</a>
+    </nav>
   <header>
     <h1>QVRewards - Status</h1>
     <h2>View your rewards status</h2>
