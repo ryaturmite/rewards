@@ -1,106 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>QVRewards - Status</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f0f2f5;
-      color: #333;
-      padding: 20px;
-    }
-
-      nav {
-        background: linear-gradient(90deg, #4f46e5, #6366f1);
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 0 0 12px 12px;
-      }
-
-      nav a {
-        color: #ffffff;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1rem;
-        padding: 8px 14px;
-        border-radius: 8px;
-        transition: background-color 0.3s ease;
-      }
-
-      nav a:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-      }
-
-    header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      color: #4f46e5;
-    }
-
-    h2 {
-      font-size: 1.2rem;
-      color: #666;
-      margin-top: 10px;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background-color: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    /* Example placeholder for future status data */
-    .status-item {
-      background-color: #f9f9f9;
-      padding: 16px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      border-left: 5px solid #4f46e5;
-    }
-
-    .status-title {
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .status-detail {
-      color: #555;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Status Dashboard - QVRewards</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { padding: 8px 12px; border: 1px solid #ddd; }
+  th { background: #333; color: white; }
+</style>
 </head>
 <body>
-    <nav>
-        <a href="#">Status</a>
-        <a href="earn/">Earn</a>
-        <a href="support/">Support</a>
-        <a href="login/">Login</a>
-    </nav>
-  <header>
-    <h1>QVRewards - Status</h1>
-    <h2>View your rewards status</h2>
-  </header>
 
-  <div class="container">
-    <!-- .status-item, .status-title, .status.detail-->
-  </div>
-  <script src="js/min/static.min.52.js"></script>
+<h1>Your Submissions Status</h1>
+<table id="status-table">
+  <thead>
+    <tr>
+      <th>Receipt ID</th>
+      <th>Restaurant #</th>
+      <th>Date</th>
+      <th>Order #</th>
+      <th>Order Total</th>
+      <th>Status</th>
+      <th>Approval Amount</th>
+      <th>Decline Message</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyARJJ-wEpWeJqfbM5v_ReqzYEn3u1QeDMA",
+    authDomain: "qvrewards.firebaseapp.com",
+    projectId: "qvrewards",
+    storageBucket: "qvrewards.appspot.com",
+    messagingSenderId: "594998843955",
+    appId: "1:594998843955:web:4b5efa3844053ec290a146",
+    measurementId: "G-152PLQK2L3",
+    databaseURL: "https://qvrewards-default-rtdb.firebaseio.com/"
+};
+
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+const tableBody = document.querySelector("#status-table tbody");
+
+function getUserCode() {
+    let userCode = localStorage.getItem('userCode');
+    if (!userCode) {
+        alert("No user code found! Please submit a receipt first.");
+        return null;
+    }
+    return userCode;
+}
+
+async function loadUserSubmissions() {
+    const userCode = getUserCode();
+    if (!userCode) {
+        tableBody.innerHTML = "<tr><td colspan='8'>No user code found. Please submit a form.</td></tr>";
+        return;
+    }
+
+    tableBody.innerHTML = "Loading...";
+
+    try {
+        const snapshot = await database.ref(`receipts/items/${userCode}`).get();
+        tableBody.innerHTML = "";
+        if (!snapshot.exists()) {
+            tableBody.innerHTML = "<tr><td colspan='8'>No submissions found.</td></tr>";
+            return;
+        }
+
+        const receipts = snapshot.val();
+        for (const receiptId in receipts) {
+            const r = receipts[receiptId];
+            const tr = document.createElement("tr");
+
+            tr.innerHTML = `
+              <td>${receiptId}</td>
+              <td>${r.restaurantNum || ""}</td>
+              <td>${r.date || ""}</td>
+              <td>${r.orderNum || ""}</td>
+              <td>${r.orderTotal !== undefined ? r.orderTotal.toFixed(2) : ""}</td>
+              <td>${r.status || "pending"}</td>
+              <td>${r.approvalAmount !== undefined && r.approvalAmount !== null ? r.approvalAmount.toFixed(2) : "-"}</td>
+              <td>${r.declineMessage || "-"}</td>
+            `;
+
+            tableBody.appendChild(tr);
+        }
+    } catch (error) {
+        tableBody.innerHTML = `<tr><td colspan="8">Error loading submissions: ${error.message}</td></tr>`;
+    }
+}
+
+window.onload = loadUserSubmissions;
+</script>
+
 </body>
 </html>

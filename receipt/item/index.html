@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QVRewards - Receipt Lookup</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f7fa; padding: 50px; text-align: center; }
+    .box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: inline-block; }
+    button { margin-top: 20px; padding: 12px 20px; font-size: 16px; border: none; border-radius: 8px; background: #4f46e5; color: white; cursor: pointer; }
+    button:hover { background: #4338ca; }
+  </style>
+</head>
+<body>
+
+<div class="box" id="content">
+  <h2>Loading receipt...</h2>
+</div>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyARJJ-wEpWeJqfbM5v_ReqzYEn3u1QeDMA",
+    authDomain: "qvrewards.firebaseapp.com",
+    projectId: "qvrewards",
+    storageBucket: "qvrewards.appspot.com",
+    messagingSenderId: "594998843955",
+    appId: "1:594998843955:web:4b5efa3844053ec290a146",
+    measurementId: "G-152PLQK2L3",
+    databaseURL: "https://qvrewards-default-rtdb.firebaseio.com/"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const receiptId = urlParams.get('n');
+
+  async function checkReceipt() {
+    if (!receiptId) {
+      document.getElementById("content").innerHTML = "<h2>Invalid request: no receipt number provided.</h2>";
+      return;
+    }
+
+    const snapshot = await database.ref("receipts/items/" + receiptId).get();
+    if (snapshot.exists()) {
+      document.getElementById("content").innerHTML = `
+        <h2>Receipt Found!</h2>
+        <p>Receipt ID: ${receiptId}</p>
+        <button onclick="goToStatus()">View Submission Statuses</button>
+      `;
+    } else {
+      document.getElementById("content").innerHTML = "<h2>Receipt not found.</h2>";
+    }
+  }
+
+  function goToStatus() {
+    window.location.href = `https://ryaturmite.github.io/status`;
+  }
+
+  checkReceipt();
+</script>
+
+</body>
+</html>

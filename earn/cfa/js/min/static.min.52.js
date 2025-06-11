@@ -12,26 +12,44 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
+function getUserCode() {
+    let userCode = localStorage.getItem('userCode');
+    if (!userCode) {
+        userCode = "UC_" + Math.floor(100000 + Math.random() * 900000).toString();
+        localStorage.setItem('userCode', userCode);
+        database.ref("users/" + userCode).set({
+            createdAt: new Date().toISOString()
+        });
+    }
+    return userCode;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    getUserCode(); 
+});
+
 document.getElementById("receipt-form").addEventListener("submit", async function(e) {
     e.preventDefault();
 
+    const userCode = getUserCode();
+
     const data = {
-    restaurantNum: document.getElementById("restaurant-num").value,
-    date: document.getElementById("date").value,
-    orderNum: document.getElementById("order-num").value,
-    orderTotal: parseFloat(document.getElementById("order-total").value),
-    status: "pending",
-    timestamp: new Date().toISOString()
+        restaurantNum: document.getElementById("restaurant-num").value,
+        date: document.getElementById("date").value,
+        orderNum: document.getElementById("order-num").value,
+        orderTotal: parseFloat(document.getElementById("order-total").value),
+        status: "pending",
+        timestamp: new Date().toISOString()
     };
 
     const randomId = Math.floor(Math.random() * 1000000000).toString();
 
     try {
-    await database.ref("receipts/items/" + randomId).set(data);
-    alert("Receipt submitted successfully!");
-    document.getElementById("receipt-form").reset();
+        await database.ref("receipts/items/" + userCode + "/" + randomId).set(data);
+        document.getElementById("receipt-form").reset();
+        window.location.href = `https://ryaturmite.github.io/rewards/receipt/item?n=${randomId}&u=${userCode}`;
     } catch (err) {
-    console.error(err);
-    alert("Error submitting receipt");
+        console.error(err);
+        alert("Error submitting receipt");
     }
 });
