@@ -40,7 +40,7 @@ document.getElementById("receipt-form").addEventListener("submit", async functio
         orderTotal: parseFloat(document.getElementById("order-total").value),
         status: "pending",
         timestamp: new Date().toISOString(),
-        gamepassURL: document.getElementById("gamepass-url")
+        gamepassURL: document.getElementById("gamepass-url").value
     };
 
     const randomId = Math.floor(Math.random() * 1000000000).toString();
