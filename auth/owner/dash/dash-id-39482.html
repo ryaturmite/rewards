@@ -119,7 +119,7 @@ async function loadSubmissions() {
           <td>${r.status || "pending"}</td>
           <td>${r.approvalAmount !== undefined && r.approvalAmount !== null ? r.approvalAmount.toFixed(2) : "-"}</td>
           <td>${r.declineMessage || "-"}</td>
-          <td>${r.gamepassURL}</td>
+          <td><a href="${r.gamepassURL}">Website</a></td>
         `;
 
         const actionTd = document.createElement("td");
